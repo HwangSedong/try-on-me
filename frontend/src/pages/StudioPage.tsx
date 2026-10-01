@@ -31,11 +31,25 @@ export function StudioPage() {
     catch (reason) { setError(reason instanceof Error ? reason.message : '생성 중 오류가 발생했습니다.') }
     finally { setGenerating(false) }
   }
-  return <main>
-    <header><a className="brand" href="/">TRY-ON<span>ME</span></a><span className="header-note">AI VIRTUAL STYLING STUDIO</span></header>
-    <section className="hero"><p className="eyebrow">MULTI-GARMENT · MULTIMODAL AI</p><h1>당신의 다음 룩을<br/><em>먼저 만나보세요.</em></h1><p>사진 속 당신을 그대로 유지한 채, 원하는 패션 아이템을 자연스럽게 입혀드립니다.</p></section>
-    <div className="studio-grid"><div className="controls"><PersonUploader file={person} onChange={setPerson}/><section className="garments"><p className="eyebrow">02 / STYLE PIECES</p><h2>착용할 아이템 <small>최소 1개 선택</small></h2><div className="garment-grid">{slots.map((slot) => <GarmentUploader key={slot.category} slot={slot} file={garments[slot.category]} onChange={(file) => setGarments((current) => ({ ...current, [slot.category]: file }))}/>)}</div></section><BackgroundRemovalOption checked={removeBackground} onChange={setRemoveBackground}/><button className="generate" disabled={!canGenerate} onClick={generate}>{generating ? 'LOOK 생성 중...' : 'GENERATE LOOK'}<span>↗</span></button>{!person || !hasGarment ? <p className="validation">전신 사진과 한 가지 이상의 아이템을 선택해 주세요.</p> : null}</div><aside>{generating ? <GenerationProgress/> : <ResultViewer resultUrl={resultUrl} retryCount={retryCount} error={error}/>}</aside></div>
-    <footer>Try-On-Me v2 · AI-assisted virtual styling. Results are for creative preview only.</footer>
+  return <main className="studio">
+    <section className="page-head">
+      <div><h1>새로운 룩을<br /><em>만들어보세요.</em></h1><p>전신 사진과 입어보고 싶은 아이템을 올려주세요.</p></div>
+    </section>
+    <div className="studio-grid">
+      <div className="panel">
+        <div className="panel-intro"><div><h2>전신 사진</h2><p>머리부터 발끝까지 보이는 사진이 가장 좋아요.</p></div><small>JPG 또는 PNG</small></div>
+        <PersonUploader file={person} onChange={setPerson}/>
+        <section className="garments">
+          <div className="garment-heading"><div><h2>입어볼 아이템 <small>최소 1개</small></h2></div><span>최대 6개</span></div>
+          <div className="garment-grid">{slots.map((slot) => <GarmentUploader key={slot.category} slot={slot} file={garments[slot.category]} onChange={(file) => setGarments((current) => ({ ...current, [slot.category]: file }))}/>)}</div>
+        </section>
+        <BackgroundRemovalOption checked={removeBackground} onChange={setRemoveBackground}/>
+        <button className="generate" disabled={!canGenerate} onClick={generate}><span>{generating ? '룩을 만들고 있어요' : '이 룩 입어보기'}</span><b>↗</b></button>
+        {!person || !hasGarment ? <p className="validation">전신 사진과 아이템 하나를 선택해 주세요.</p> : null}
+      </div>
+      <aside className="panel result-panel"><div className="result-topline"><span>피팅 결과</span><span>미리보기</span></div>{generating ? <GenerationProgress/> : <ResultViewer resultUrl={resultUrl} retryCount={retryCount} error={error}/>}</aside>
+    </div>
+    <footer>Try-On Me</footer>
   </main>
 }
 
