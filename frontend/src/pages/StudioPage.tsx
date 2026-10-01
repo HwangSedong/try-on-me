@@ -21,27 +21,34 @@ export function StudioPage() {
   const [retryCount, setRetryCount] = useState<number>()
   const [error, setError] = useState<string>()
   const [generating, setGenerating] = useState(false)
+  const [showMoreItems, setShowMoreItems] = useState(false)
+  const [mobileView, setMobileView] = useState<'form' | 'result'>('form')
   const hasGarment = Object.values(garments).some(Boolean)
   const canGenerate = Boolean(person && hasGarment && !generating)
 
   async function generate() {
     if (!person || !hasGarment) return
-    setGenerating(true); setError(undefined); setResultUrl(undefined)
+    setGenerating(true); setError(undefined); setResultUrl(undefined); setMobileView('result')
     try { const response = await requestGeneration(person, garments, removeBackground); setResultUrl(response.result_url); setRetryCount(response.retry_count) }
     catch (reason) { setError(reason instanceof Error ? reason.message : '생성 중 오류가 발생했습니다.') }
     finally { setGenerating(false) }
   }
   return <main className="studio">
     <section className="page-head">
-      <div><h1>새로운 룩을<br /><em>만들어보세요.</em></h1><p>전신 사진과 입어보고 싶은 아이템을 올려주세요.</p></div>
+      <div><h1>새로운 룩 <em>만들기</em></h1><p>전신 사진과 입어보고 싶은 아이템을 올려주세요.</p></div>
     </section>
-    <div className="studio-grid">
+    <div className="mobile-view-switch" role="tablist" aria-label="가상 피팅 화면">
+      <button type="button" role="tab" aria-selected={mobileView === 'form'} onClick={() => setMobileView('form')}>사진과 아이템</button>
+      <button type="button" role="tab" aria-selected={mobileView === 'result'} onClick={() => setMobileView('result')}>피팅 결과</button>
+    </div>
+    <div className={`studio-grid mobile-${mobileView}`}>
       <div className="panel">
         <div className="panel-intro"><div><h2>전신 사진</h2><p>머리부터 발끝까지 보이는 사진이 가장 좋아요.</p></div><small>JPG 또는 PNG</small></div>
         <PersonUploader file={person} onChange={setPerson}/>
         <section className="garments">
-          <div className="garment-heading"><div><h2>입어볼 아이템 <small>최소 1개</small></h2></div><span>최대 6개</span></div>
-          <div className="garment-grid">{slots.map((slot) => <GarmentUploader key={slot.category} slot={slot} file={garments[slot.category]} onChange={(file) => setGarments((current) => ({ ...current, [slot.category]: file }))}/>)}</div>
+          <div className="garment-heading"><div><h2>입어볼 아이템 <small>최소 1개</small></h2></div><span>상의부터 골라보세요</span></div>
+          <div className="garment-grid">{slots.slice(0, showMoreItems ? slots.length : 3).map((slot) => <GarmentUploader key={slot.category} slot={slot} file={garments[slot.category]} onChange={(file) => setGarments((current) => ({ ...current, [slot.category]: file }))}/>)}</div>
+          {!showMoreItems ? <button type="button" className="add-items" onClick={() => setShowMoreItems(true)}>+ 신발, 모자, 액세서리 추가</button> : null}
         </section>
         <BackgroundRemovalOption checked={removeBackground} onChange={setRemoveBackground}/>
         <button className="generate" disabled={!canGenerate} onClick={generate}><span>{generating ? '룩을 만들고 있어요' : '이 룩 입어보기'}</span><b>↗</b></button>

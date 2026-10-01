@@ -1,21 +1,33 @@
 export function HomePage() {
   return (
-    <main className="home campaign-home">
-      <section className="campaign">
-        <figure className="campaign-image">
-          <img src="/marketing/result.jpg" alt="크림색 카디건과 검정 스커트를 입은 가상 피팅 예시" />
-          <figcaption><span>가상 피팅 예시</span><span>전신 사진 + 의류 이미지</span></figcaption>
-        </figure>
-        <div className="campaign-copy">
-          <div><h1>어울리는지<br />생각하지 말고,<br /><em>먼저 입어봐.</em></h1></div>
-          <p className="campaign-description">내 사진과 마음에 드는 옷을 올리면<br />AI가 당신만의 새로운 룩을 완성합니다.</p>
-          <ul className="fit-requirements" aria-label="가상 피팅 준비물">
-            <li><b>전신 사진</b><span>JPG 또는 PNG</span></li>
-            <li><b>의류 이미지</b><span>입어보고 싶은 아이템</span></li>
-            <li><b>피팅 결과</b><span>새로운 룩을 바로 확인</span></li>
-          </ul>
-          <a className="campaign-cta" href="/fit"><span>START A NEW LOOK</span><b>가상 피팅 시작하기</b><i aria-hidden="true">→</i></a>
-          <p className="campaign-note">계정 없이 바로 시작할 수 있어요.</p>
+    <main className="home">
+      <section className="tryon-showcase">
+        <div className="showcase-intro">
+          <div className="showcase-copy">
+            <h1>Try it on.</h1>
+            <p>내 사진에 원하는 옷을 바로 입혀보세요.</p>
+          </div>
+          <a className="showcase-start" href="/fit">가상 피팅 시작하기 <span aria-hidden="true">→</span></a>
+        </div>
+        <div className="showcase-flow">
+          <figure className="showcase-photo">
+            <img src="/marketing/person.jpg" alt="가상 피팅에 사용할 전신 사진 예시" />
+            <figcaption><span>01</span>YOUR PHOTO</figcaption>
+          </figure>
+          <section className="showcase-item" aria-label="입어볼 아이템 예시">
+            <img className="showcase-garment" src="/marketing/denim-jacket-cutout.png" alt="진청색 데님 재킷" />
+            <div className="showcase-item-copy"><span>02</span><small>SELECTED ITEM</small><strong>Denim Jacket</strong><p>Outerwear&nbsp;&nbsp;·&nbsp;&nbsp;Denim</p></div>
+            <div className="item-options" aria-label="다른 아이템 예시">
+              <img className="active" src="/marketing/denim-jacket-cutout.png" alt="선택된 데님 재킷" />
+              <img src="/marketing/trench.jpg" alt="트렌치코트" />
+              <img src="/marketing/cardigan.jpg" alt="카디건" />
+              <img src="/marketing/bag.jpg" alt="검은 가방" />
+            </div>
+          </section>
+          <figure className="showcase-result">
+            <img src="/marketing/look-preserved.png" alt="같은 인물이 데님 재킷을 입은 가상 피팅 결과 예시" />
+            <figcaption><span>03</span>RESULT</figcaption>
+          </figure>
         </div>
       </section>
     </main>
