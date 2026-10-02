@@ -11,5 +11,6 @@ class BackgroundRemover:
             content=await self.provider.remove_background(image.content),
             content_type=image.content_type,
             filename=image.filename,
+            width=image.width,
+            height=image.height,
         )
-

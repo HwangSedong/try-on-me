@@ -13,6 +13,13 @@ const slots: GarmentSlot[] = [
   { category: 'hat', label: '모자', hint: '캡, 비니' }, { category: 'accessory', label: '액세서리', hint: '가방, 안경 등' },
 ]
 
+const sampleAssets = {
+  person: { path: '/marketing/person.jpg', name: 'sample-person.jpg' },
+  top: { path: '/marketing/cardigan.jpg', name: 'sample-cardigan.jpg' },
+  bottom: { path: '/marketing/skirt.jpg', name: 'sample-skirt.jpg' },
+  outer: { path: '/marketing/denim-jacket-cutout.png', name: 'sample-denim-jacket.png' },
+} as const
+
 export function StudioPage() {
   const [person, setPerson] = useState<File>()
   const [garments, setGarments] = useState<Partial<Record<GarmentCategory, File>>>({})
@@ -23,6 +30,7 @@ export function StudioPage() {
   const [generating, setGenerating] = useState(false)
   const [showMoreItems, setShowMoreItems] = useState(false)
   const [mobileView, setMobileView] = useState<'form' | 'result'>('form')
+  const [sampleLoading, setSampleLoading] = useState(false)
   const hasGarment = Object.values(garments).some(Boolean)
   const canGenerate = Boolean(person && hasGarment && !generating)
 
@@ -33,9 +41,46 @@ export function StudioPage() {
     catch (reason) { setError(reason instanceof Error ? reason.message : '생성 중 오류가 발생했습니다.') }
     finally { setGenerating(false) }
   }
+
+  async function loadSample() {
+    setSampleLoading(true)
+    setError(undefined)
+    try {
+      const loadFile = async ({ path, name }: { path: string; name: string }) => {
+        const response = await fetch(path)
+        if (!response.ok) throw new Error('샘플 이미지를 불러오지 못했습니다.')
+        const image = await response.blob()
+        return new File([image], name, { type: image.type })
+      }
+      const [samplePerson, sampleTop, sampleBottom, sampleOuter] = await Promise.all([
+        loadFile(sampleAssets.person), loadFile(sampleAssets.top), loadFile(sampleAssets.bottom), loadFile(sampleAssets.outer),
+      ])
+      setPerson(samplePerson)
+      setGarments({ top: sampleTop, bottom: sampleBottom, outer: sampleOuter })
+      setShowMoreItems(false)
+      setResultUrl(undefined)
+      setRetryCount(undefined)
+      setMobileView('form')
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : '샘플 이미지를 불러오지 못했습니다.')
+    } finally {
+      setSampleLoading(false)
+    }
+  }
+
+  function resetStudio() {
+    setPerson(undefined)
+    setGarments({})
+    setResultUrl(undefined)
+    setRetryCount(undefined)
+    setError(undefined)
+    setShowMoreItems(false)
+    setMobileView('form')
+  }
+
   return <main className="studio">
     <section className="page-head">
-      <div><h1>새로운 룩 <em>만들기</em></h1><p>전신 사진과 입어보고 싶은 아이템을 올려주세요.</p></div>
+      <div><div className="page-head-title"><h1>새로운 룩 <em>만들기</em></h1><div className="studio-actions"><button type="button" className="sample-button" onClick={loadSample} disabled={sampleLoading || generating}>{sampleLoading ? '샘플 불러오는 중' : '샘플 추가'}</button><button type="button" className="reset-button" onClick={resetStudio} disabled={sampleLoading || generating}>초기화</button></div></div><p>전신 사진과 입어보고 싶은 아이템을 올려주세요.</p></div>
     </section>
     <div className="mobile-view-switch" role="tablist" aria-label="가상 피팅 화면">
       <button type="button" role="tab" aria-selected={mobileView === 'form'} onClick={() => setMobileView('form')}>사진과 아이템</button>
@@ -54,9 +99,8 @@ export function StudioPage() {
         <button className="generate" disabled={!canGenerate} onClick={generate}><span>{generating ? '룩을 만들고 있어요' : '이 룩 입어보기'}</span><b>↗</b></button>
         {!person || !hasGarment ? <p className="validation">전신 사진과 아이템 하나를 선택해 주세요.</p> : null}
       </div>
-      <aside className="panel result-panel"><div className="result-topline"><span>피팅 결과</span><span>미리보기</span></div>{generating ? <GenerationProgress/> : <ResultViewer resultUrl={resultUrl} retryCount={retryCount} error={error}/>}</aside>
+      <aside className="panel result-panel"><div className="result-topline"><span>피팅 결과</span><span>미리보기</span></div>{generating ? <GenerationProgress person={person!} garments={garments}/> : <ResultViewer resultUrl={resultUrl} retryCount={retryCount} error={error}/>}</aside>
     </div>
     <footer>Try-On Me</footer>
   </main>
 }
-

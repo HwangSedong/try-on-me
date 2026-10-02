@@ -19,6 +19,8 @@ class ImageAsset:
     content: bytes
     content_type: str
     filename: str | None = None
+    width: int | None = None
+    height: int | None = None
 
 
 @dataclass(frozen=True)
@@ -72,4 +74,3 @@ class ErrorResponse(BaseModel):
     status: str = "failed"
     message: str
     details: dict[str, Any] | None = None
-
