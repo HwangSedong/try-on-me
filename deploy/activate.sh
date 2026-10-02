@@ -17,7 +17,10 @@ if [[ ! -f "$APP/shared/.env" ]]; then
   exit 1
 fi
 
-previous=$(readlink -f "$APP/current" || true)
+previous=""
+if [[ -L "$APP/current" ]]; then
+  previous=$(readlink "$APP/current")
+fi
 ln -sfn "$RELEASE" "$APP/current"
 sudo cp "$RELEASE/deploy/try-on-me.service" /etc/systemd/system/try-on-me.service
 sudo systemctl daemon-reload
@@ -35,7 +38,7 @@ done
 
 if [[ "$healthy" -ne 1 ]]; then
   echo "new release failed health check" >&2
-  if [[ -n "$previous" && -d "$previous" ]]; then
+  if [[ -n "$previous" && -d "$previous" && "$previous" != "$RELEASE" ]]; then
     ln -sfn "$previous" "$APP/current"
     sudo systemctl restart try-on-me || true
   fi
