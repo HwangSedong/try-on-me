@@ -28,7 +28,7 @@ sudo systemctl enable try-on-me
 sudo systemctl restart try-on-me
 
 healthy=0
-for _ in 1 2 3 4 5 6 7 8; do
+for _ in $(seq 1 30); do
   if curl -fsS "http://172.18.0.1:8010/api/health" >/dev/null; then
     healthy=1
     break
@@ -38,6 +38,7 @@ done
 
 if [[ "$healthy" -ne 1 ]]; then
   echo "new release failed health check" >&2
+  sudo journalctl -u try-on-me -n 40 --no-pager >&2 || true
   if [[ -n "$previous" && -d "$previous" && "$previous" != "$RELEASE" ]]; then
     ln -sfn "$previous" "$APP/current"
     sudo systemctl restart try-on-me || true
