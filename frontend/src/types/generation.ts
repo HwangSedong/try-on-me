@@ -4,3 +4,10 @@ export type GarmentSlot = { category: GarmentCategory; label: string; hint: stri
 
 export type GenerateResponse = { status: 'completed'; result_url: string; retry_count: number }
 
+export type GarmentPreparationResponse = {
+  detected_category: GarmentCategory
+  confidence: number
+  quality: 'good' | 'warning' | 'poor'
+  issues: string[]
+  cutout_url: string
+}

@@ -10,6 +10,7 @@ const stages = [
   { label: '결과 준비', detail: '완성 이미지를 정리하고 있어요. 곧 결과를 보여드릴게요.' },
 ]
 
+const categoryOrder: GarmentCategory[] = ['top', 'bottom', 'outer', 'shoes', 'hat', 'accessory']
 const categoryLabels: Record<GarmentCategory, string> = { top: '상의', bottom: '하의', outer: '아우터', shoes: '신발', hat: '모자', accessory: '액세서리' }
 
 function useObjectUrl(file?: File) {
@@ -31,13 +32,13 @@ function ReferenceCard({ category, file, active }: { category: GarmentCategory; 
 export function GenerationProgress({ person, garments, stageIntervalMs = 2600 }: Props) {
   const [stage, setStage] = useState(0)
   const personUrl = useObjectUrl(person)
-  const references = (Object.entries(garments) as [GarmentCategory, File | undefined][]).filter((entry): entry is [GarmentCategory, File] => Boolean(entry[1]))
+  const references = categoryOrder.flatMap((category) => garments[category] ? [[category, garments[category]] as const] : [])
   useEffect(() => {
     const interval = window.setInterval(() => setStage((current) => Math.min(current + 1, stages.length - 1)), stageIntervalMs)
     return () => window.clearInterval(interval)
   }, [stageIntervalMs])
   return <section className="progress" aria-live="polite">
-    <div className="generation-canvas" aria-hidden="true"><div className="canvas-orbit orbit-one" /><div className="canvas-orbit orbit-two" /><div className="generation-person">{personUrl ? <img src={personUrl} alt="" /> : null}<span className="scan-line" /></div><div className="generation-references">{references.slice(0, 3).map(([category, file], index) => <ReferenceCard key={category} category={category} file={file} active={index === Math.min(stage, Math.max(references.length - 1, 0))} />)}</div><div className="generation-spark spark-one" /><div className="generation-spark spark-two" /><div className="generation-spark spark-three" /></div>
+    <div className="generation-canvas" aria-hidden="true"><div className="canvas-orbit orbit-one" /><div className="canvas-orbit orbit-two" /><div className="generation-person">{personUrl ? <img src={personUrl} alt="" /> : null}<span className="scan-line" /></div><div className={`generation-references${references.length > 3 ? ' is-dense' : ''}`}>{references.map(([category, file], index) => <ReferenceCard key={category} category={category} file={file} active={index === Math.min(stage, Math.max(references.length - 1, 0))} />)}</div><div className="generation-spark spark-one" /><div className="generation-spark spark-two" /><div className="generation-spark spark-three" /></div>
     <div className="progress-copy"><div className="progress-label"><span className="live-dot" />AI STYLING IN PROGRESS</div><h2>{stages[stage].label}</h2><p>{stages[stage].detail}</p><div className="stage-track" aria-label={`생성 단계 ${stage + 1} / ${stages.length}`}>{stages.map((item, index) => <span key={item.label} className={index < stage ? 'is-complete' : index === stage ? 'is-current' : ''}><i />{item.label}</span>)}</div></div>
   </section>
 }
