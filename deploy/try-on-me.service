@@ -1,0 +1,24 @@
+[Unit]
+Description=Try-On Me API
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/apps/try-on-me/current/backend
+Environment=PYTHONPATH=/home/ubuntu/apps/try-on-me/current/pydeps
+Environment=STATIC_DIR=/home/ubuntu/apps/try-on-me/current/frontend-dist
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/home/ubuntu/apps/try-on-me/shared/.env
+ExecStart=/usr/bin/python3 -m uvicorn app.main:app --host 172.18.0.1 --port 8010 --workers 1 --proxy-headers --forwarded-allow-ips=172.18.0.0/16
+Restart=on-failure
+RestartSec=3
+Nice=15
+CPUQuota=40%
+MemoryHigh=300M
+MemoryMax=384M
+OOMScoreAdjust=500
+
+[Install]
+WantedBy=multi-user.target

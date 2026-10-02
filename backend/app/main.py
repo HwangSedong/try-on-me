@@ -1,5 +1,11 @@
+import os
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.generation import router as generation_router
 from app.core.config import get_settings
@@ -56,6 +62,19 @@ def create_garment_preparer(settings):
     raise RuntimeError(f"garment preparation provider '{settings.garment_preparation_provider}' is not implemented")
 
 
+class SpaStaticFiles(StaticFiles):
+    async def get_response(self, path: str, scope):
+        try:
+            response = await super().get_response(path, scope)
+        except StarletteHTTPException as error:
+            if error.status_code != 404:
+                raise
+            response = None
+        if response is None or response.status_code == 404:
+            return FileResponse(Path(self.directory) / "index.html")
+        return response
+
+
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_observability(settings.log_level)
@@ -72,6 +91,9 @@ def create_app() -> FastAPI:
         max_retries=settings.max_generation_retries,
     )
     app.include_router(generation_router)
+    static_dir = os.environ.get("STATIC_DIR")
+    if static_dir and Path(static_dir).is_dir():
+        app.mount("/", SpaStaticFiles(directory=static_dir, html=True), name="studio")
     return app
 
 

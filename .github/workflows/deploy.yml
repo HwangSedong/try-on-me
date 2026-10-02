@@ -1,0 +1,64 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: try-on-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          VITE_API_BASE_URL: ""
+        run: npm ci && npm run build
+
+      - name: Package server bundle
+        run: |
+          mkdir -p bundle/backend bundle/frontend-dist bundle/deploy
+          cp -a backend/app bundle/backend/app
+          find bundle/backend -type d -name __pycache__ -exec rm -rf {} +
+          cp -a frontend/dist/. bundle/frontend-dist/
+          cp -a deploy/. bundle/deploy/
+          python -m pip install --upgrade pip
+          pip install --target bundle/pydeps -r backend/requirements-prod.txt
+          find bundle/pydeps -type d -name __pycache__ -exec rm -rf {} +
+
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.TRYON_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/tryon
+          chmod 600 ~/.ssh/tryon
+          ssh-keyscan -H 52.79.115.211 >> ~/.ssh/known_hosts
+
+      - name: Publish release
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          ssh -i ~/.ssh/tryon -o IdentitiesOnly=yes ubuntu@52.79.115.211 "mkdir -p /home/ubuntu/apps/try-on-me/releases/$SHA"
+          rsync -az \
+            -e "ssh -i ~/.ssh/tryon -o IdentitiesOnly=yes" \
+            --rsync-path="nice -n 19 rsync" \
+            bundle/ "ubuntu@52.79.115.211:/home/ubuntu/apps/try-on-me/releases/$SHA/"
+          ssh -i ~/.ssh/tryon -o IdentitiesOnly=yes ubuntu@52.79.115.211 "chmod +x /home/ubuntu/apps/try-on-me/releases/$SHA/deploy/activate.sh && nice -n 19 /home/ubuntu/apps/try-on-me/releases/$SHA/deploy/activate.sh /home/ubuntu/apps/try-on-me/releases/$SHA"

@@ -13,6 +13,11 @@ from app.services.garment_preparer import GarmentPreparer
 from app.services.image_sizing import inspect_dimensions
 
 router = APIRouter(prefix="/api", tags=["generation"])
+
+
+@router.get("/health")
+async def health() -> dict[str, str]:
+    return {"status": "ok"}
 _results: dict[str, ImageAsset] = {}
 _cutouts: dict[str, ImageAsset] = {}
 _ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp"}
