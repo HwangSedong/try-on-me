@@ -86,18 +86,38 @@ def _format_event(payload: dict[str, Any]) -> str:
         )
         return f"{prefix} 생성 요청 접수\n  입력  사람 ({person['content_type']}, {person['size']}, {_format_bytes(person['bytes'])}) | 의류 {garments}\n  옵션  배경 제거 {'사용' if payload['remove_background'] else '사용 안 함'}"
     if event == "llm.call.started":
+        if payload.get("operation") == "chat.completions.classify_garment":
+            return f"{prefix} OpenAI 의류 분류 시작\n  모델  {payload['model']} | 입력 {_format_images(payload['input_images'])}"
         source_size = f" | 원본 {payload['source_size']}" if payload.get("source_size") else ""
-        return f"{prefix} OpenAI 이미지 생성 시작\n  모델  {payload['model']} | API 생성 {payload['size']}{source_size}\n  품질  {payload['quality']}\n  참조  {_format_images(payload['input_images'])}"
+        label = "의류 컷아웃 생성" if payload.get("operation") == "images.edit.garment_cutout" else "이미지 생성"
+        return f"{prefix} OpenAI {label} 시작\n  모델  {payload['model']} | API 생성 {payload['size']}{source_size}\n  품질  {payload['quality']}\n  참조  {_format_images(payload['input_images'])}"
     if event == "llm.call.completed":
+        if payload.get("operation") == "chat.completions.classify_garment":
+            lines = [f"{prefix} OpenAI 의류 분류 완료 · {duration}", f"  모델  {payload['model']} | 결과 JSON"]
+            if usage := _format_usage(payload.get("usage")):
+                lines.append(f"  토큰  {usage}")
+            if openai_request_id := payload.get("openai_request_id"):
+                lines.append(f"  OpenAI 요청 ID  {openai_request_id}")
+            return "\n".join(lines)
         output_size = f" · {payload['output_size']}" if payload.get("output_size") else ""
-        lines = [f"{prefix} OpenAI 이미지 생성 완료 · {duration}", f"  모델  {payload['model']} | 결과 {payload['output_content_type']}{output_size} · {_format_bytes(payload['output_bytes'])}"]
+        label = "의류 컷아웃 생성" if payload.get("operation") == "images.edit.garment_cutout" else "이미지 생성"
+        lines = [f"{prefix} OpenAI {label} 완료 · {duration}", f"  모델  {payload['model']} | 결과 {payload['output_content_type']}{output_size} · {_format_bytes(payload['output_bytes'])}"]
         if usage := _format_usage(payload.get("usage")):
             lines.append(f"  토큰  {usage}")
         if openai_request_id := payload.get("openai_request_id"):
             lines.append(f"  OpenAI 요청 ID  {openai_request_id}")
         return "\n".join(lines)
     if event == "llm.call.failed":
-        return f"{prefix} OpenAI 이미지 생성 실패 · {duration}\n  모델  {payload['model']} | 원인 {payload['error_type']}"
+        labels = {"chat.completions.classify_garment": "의류 분류", "images.edit.garment_cutout": "의류 컷아웃 생성"}
+        label = labels.get(payload.get("operation"), "이미지 생성")
+        return f"{prefix} OpenAI {label} 실패 · {duration}\n  모델  {payload['model']} | 원인 {payload['error_type']}"
+    if event == "garment.preparation.request_received":
+        image = payload["image"]
+        return f"{prefix} 의류 입력 분석 접수\n  요청 칸  {payload['requested_category']} | 입력 ({image['content_type']}, {image['size']}, {_format_bytes(image['bytes'])})"
+    if event == "garment.preparation.completed":
+        return f"{prefix} 의류 준비 완료 · {duration}\n  감지  {payload['detected_category']} | 신뢰도 {payload['confidence']:.0%} | 컷아웃 {payload['output_size']} | 품질 {payload['quality']}"
+    if event == "garment.preparation.failed":
+        return f"{prefix} 의류 준비 실패 · {duration} | {payload['error_type']}"
     if event == "pipeline.started":
         garments = ", ".join(payload["garment_categories"])
         return f"{prefix} 파이프라인 시작\n  의류 카테고리  {garments} | 배경 제거 {'사용' if payload['remove_background'] else '사용 안 함'}"

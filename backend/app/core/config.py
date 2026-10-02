@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     image_generation_quality: str = "high"
     image_generation_size: str = "1024x1536"
     image_generation_format: str = "png"
+    garment_preparation_provider: str = "same-as-image-generation"
+    garment_classification_model: str = "gpt-4o-mini"
+    garment_cutout_model: str = "gpt-image-2.5-sunburst"
     max_upload_size_mb: int = 15
     vision_provider: str = "mock"
     background_removal_provider: str = "mock"

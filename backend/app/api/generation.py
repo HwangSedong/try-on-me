@@ -8,10 +8,13 @@ from app.core.exceptions import GenerationFailedException, ImageGenerationProvid
 from app.core.observability import generation_request_context, log_event
 from app.pipeline.outfit_pipeline import OutfitPipeline
 from app.schemas.generation import GarmentCategory, GarmentInput, GenerateResponse, GenerationInput, ImageAsset
+from app.schemas.garment_preparation import GarmentPreparationResponse
+from app.services.garment_preparer import GarmentPreparer
 from app.services.image_sizing import inspect_dimensions
 
 router = APIRouter(prefix="/api", tags=["generation"])
 _results: dict[str, ImageAsset] = {}
+_cutouts: dict[str, ImageAsset] = {}
 _ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
 
@@ -25,6 +28,38 @@ async def _asset(upload: UploadFile, max_size_bytes: int) -> ImageAsset:
         raise HTTPException(status_code=413, detail="이미지 파일이 너무 큽니다. 더 작은 이미지를 사용해주세요.")
     width, height = inspect_dimensions(content)
     return ImageAsset(content=content, content_type=upload.content_type, filename=upload.filename, width=width, height=height)
+
+
+@router.post("/garments/prepare", response_model=GarmentPreparationResponse)
+async def prepare_garment(
+    request: Request,
+    image: UploadFile = File(...),
+    requested_category: GarmentCategory = Form(...),
+) -> GarmentPreparationResponse:
+    request_id = str(uuid4())
+    with generation_request_context(request_id):
+        try:
+            asset = await _asset(image, request.app.state.settings.max_upload_size_bytes)
+            log_event(
+                "garment.preparation.request_received",
+                requested_category=requested_category.value,
+                image={"content_type": asset.content_type, "bytes": len(asset.content), "size": f"{asset.width}x{asset.height}"},
+            )
+            preparer: GarmentPreparer = request.app.state.garment_preparer
+            preparation = await preparer.prepare(asset, requested_category)
+            cutout_id = str(uuid4())
+            _cutouts[cutout_id] = preparation.cutout
+            return GarmentPreparationResponse(
+                detected_category=preparation.detected_category,
+                confidence=preparation.confidence,
+                quality=preparation.quality,
+                issues=preparation.issues,
+                cutout_url=f"/api/cutouts/{cutout_id}",
+            )
+        except InvalidImageGenerationInputError as error:
+            raise HTTPException(status_code=422, detail="의류 이미지를 분석할 수 없습니다. 다른 사진을 사용해주세요.") from error
+        except ImageGenerationProviderError as error:
+            raise HTTPException(status_code=502, detail="의류 자동 컷아웃을 만들지 못했습니다. 잠시 후 다시 시도해주세요.") from error
 
 
 @router.post("/generate", response_model=GenerateResponse)
@@ -76,4 +111,12 @@ async def get_result(result_id: str) -> Response:
     image = _results.get(result_id)
     if image is None:
         raise HTTPException(status_code=404, detail="Result not found")
+    return Response(content=image.content, media_type=image.content_type, headers={"Cache-Control": "no-store"})
+
+
+@router.get("/cutouts/{cutout_id}")
+async def get_cutout(cutout_id: str) -> Response:
+    image = _cutouts.get(cutout_id)
+    if image is None:
+        raise HTTPException(status_code=404, detail="Cutout not found")
     return Response(content=image.content, media_type=image.content_type, headers={"Cache-Control": "no-store"})

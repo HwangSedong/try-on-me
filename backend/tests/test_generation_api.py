@@ -5,6 +5,7 @@ from PIL import Image
 
 from app.main import create_app
 from app.providers.generation.mock import MockImageGenerationProvider
+from app.services.garment_preparer import MockGarmentPreparer
 
 
 client = TestClient(create_app())
@@ -55,3 +56,21 @@ def test_mock_end_to_end_returns_temporary_result():
     assert image.status_code == 200
     with Image.open(BytesIO(image.content)) as output:
         assert output.size == (20, 30)
+
+
+def test_prepares_garment_and_serves_cutout_without_network():
+    client.app.state.garment_preparer = MockGarmentPreparer()
+    response = client.post(
+        "/api/garments/prepare",
+        files={"image": ("coat.png", BytesIO(png(80, 120)), "image/png")},
+        data={"requested_category": "outer"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["detected_category"] == "outer"
+    assert payload["quality"] == "warning"
+    cutout = client.get(payload["cutout_url"])
+    assert cutout.status_code == 200
+    with Image.open(BytesIO(cutout.content)) as output:
+        assert output.size == (80, 120)
