@@ -1,0 +1,673 @@
+{
+  "label": "after-log-warning",
+  "environment": {
+    "timestamp_utc": "2026-10-26T05:34:42+00:00",
+    "client_python": "3.13.14",
+    "host_os": "Windows-11-10.0.26200-SP0",
+    "host_cpu": "Intel64 Family 6 Model 189 Stepping 1, GenuineIntel",
+    "mode": "local",
+    "server_python": "3.13.14",
+    "server_fastapi": "0.162.0",
+    "server_uvicorn": "0.54.0",
+    "host_logical_cpus": 8,
+    "host_memory_bytes": 33971167232,
+    "memory_limit_enforced": false
+  },
+  "workload": {
+    "iteration": "POST /api/garments/prepare -> GET cutout -> POST /api/generate -> GET result",
+    "iterations_sequential": 100,
+    "checkpoints": [
+      10,
+      50,
+      100
+    ],
+    "iterations_concurrent": 100,
+    "concurrency": 8,
+    "result_bytes": 2097152,
+    "cutout_bytes": 1572864,
+    "person_upload_bytes": 229,
+    "garment_upload_bytes": 156,
+    "repeats": 3,
+    "idle_seconds": 3,
+    "log_level": "WARNING"
+  },
+  "runs": [
+    {
+      "repeat": 1,
+      "crashed_at": null,
+      "final_state": {
+        "running": true,
+        "exit_code": null
+      },
+      "phases": {
+        "sequential": {
+          "iterations": 100,
+          "wall_seconds": 12.383
+        },
+        "concurrent": {
+          "iterations": 100,
+          "concurrency": 8,
+          "wall_seconds": 9.954
+        }
+      },
+      "snapshots": [
+        {
+          "point": "initial",
+          "completed_iterations": 0,
+          "process": {
+            "rss_bytes": 84180992,
+            "peak_rss_bytes": 84180992
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 0,
+            "bytes": 0,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 0,
+            "evicted_total": 0,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_10",
+          "completed_iterations": 10,
+          "process": {
+            "rss_bytes": 124592128,
+            "peak_rss_bytes": 124592128
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 20,
+            "bytes": 36700160,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 20,
+            "evicted_total": 0,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_50",
+          "completed_iterations": 50,
+          "process": {
+            "rss_bytes": 153120768,
+            "peak_rss_bytes": 158617600
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 100,
+            "evicted_total": 64,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_100",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 156590080,
+            "peak_rss_bytes": 159002624
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 200,
+            "evicted_total": 164,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "idle_after_sequential",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 152817664,
+            "peak_rss_bytes": 159002624
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 200,
+            "evicted_total": 164,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_concurrent",
+          "completed_iterations": 200,
+          "process": {
+            "rss_bytes": 163475456,
+            "peak_rss_bytes": 164880384
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 67108864,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 400,
+            "evicted_total": 364,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "crashed_at": null,
+      "final_state": {
+        "running": true,
+        "exit_code": null
+      },
+      "phases": {
+        "sequential": {
+          "iterations": 100,
+          "wall_seconds": 12.393
+        },
+        "concurrent": {
+          "iterations": 100,
+          "concurrency": 8,
+          "wall_seconds": 9.916
+        }
+      },
+      "snapshots": [
+        {
+          "point": "initial",
+          "completed_iterations": 0,
+          "process": {
+            "rss_bytes": 84217856,
+            "peak_rss_bytes": 84217856
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 0,
+            "bytes": 0,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 0,
+            "evicted_total": 0,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_10",
+          "completed_iterations": 10,
+          "process": {
+            "rss_bytes": 124493824,
+            "peak_rss_bytes": 124493824
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 20,
+            "bytes": 36700160,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 20,
+            "evicted_total": 0,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_50",
+          "completed_iterations": 50,
+          "process": {
+            "rss_bytes": 158486528,
+            "peak_rss_bytes": 158580736
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 100,
+            "evicted_total": 64,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_100",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 156471296,
+            "peak_rss_bytes": 159076352
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 200,
+            "evicted_total": 164,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "idle_after_sequential",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 152698880,
+            "peak_rss_bytes": 159076352
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 200,
+            "evicted_total": 164,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_concurrent",
+          "completed_iterations": 200,
+          "process": {
+            "rss_bytes": 156364800,
+            "peak_rss_bytes": 172466176
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66584576,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 400,
+            "evicted_total": 364,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 3,
+      "crashed_at": null,
+      "final_state": {
+        "running": true,
+        "exit_code": null
+      },
+      "phases": {
+        "sequential": {
+          "iterations": 100,
+          "wall_seconds": 12.69
+        },
+        "concurrent": {
+          "iterations": 100,
+          "concurrency": 8,
+          "wall_seconds": 9.811
+        }
+      },
+      "snapshots": [
+        {
+          "point": "initial",
+          "completed_iterations": 0,
+          "process": {
+            "rss_bytes": 84086784,
+            "peak_rss_bytes": 84086784
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 0,
+            "bytes": 0,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 0,
+            "evicted_total": 0,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_10",
+          "completed_iterations": 10,
+          "process": {
+            "rss_bytes": 124555264,
+            "peak_rss_bytes": 124555264
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 20,
+            "bytes": 36700160,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 20,
+            "evicted_total": 0,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_50",
+          "completed_iterations": 50,
+          "process": {
+            "rss_bytes": 156971008,
+            "peak_rss_bytes": 158654464
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 100,
+            "evicted_total": 64,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_100",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 156663808,
+            "peak_rss_bytes": 159612928
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 200,
+            "evicted_total": 164,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "idle_after_sequential",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 152924160,
+            "peak_rss_bytes": 159612928
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 66060288,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 200,
+            "evicted_total": 164,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        },
+        {
+          "point": "after_concurrent",
+          "completed_iterations": 200,
+          "process": {
+            "rss_bytes": 163110912,
+            "peak_rss_bytes": 174931968
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "temporary-image-store",
+            "items": 36,
+            "bytes": 67108864,
+            "max_items": 100,
+            "max_bytes": 67108864,
+            "ttl_seconds": 1800.0,
+            "stored_total": 400,
+            "evicted_total": 364,
+            "expired_total": 0,
+            "rejected_total": 0
+          }
+        }
+      ]
+    }
+  ],
+  "latency": {
+    "sequential": {
+      "requests": 1200,
+      "succeeded": 1200,
+      "failed": 0,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 1200
+      },
+      "requests_per_second": 32.03,
+      "all_requests": {
+        "count": 1200,
+        "mean_ms": 31.19,
+        "p50_ms": 31.995,
+        "p95_ms": 82.039,
+        "p99_ms": 116.419,
+        "max_ms": 125.512
+      },
+      "by_endpoint": {
+        "GET /api/cutouts/{id}": {
+          "count": 300,
+          "mean_ms": 51.94,
+          "p50_ms": 48.516,
+          "p95_ms": 85.166,
+          "p99_ms": 94.908,
+          "max_ms": 107.92
+        },
+        "GET /api/results/{id}": {
+          "count": 300,
+          "mean_ms": 66.99,
+          "p50_ms": 63.702,
+          "p95_ms": 112.988,
+          "p99_ms": 119.887,
+          "max_ms": 125.512
+        },
+        "POST /api/garments/prepare": {
+          "count": 300,
+          "mean_ms": 2.69,
+          "p50_ms": 2.258,
+          "p95_ms": 3.947,
+          "p99_ms": 9.849,
+          "max_ms": 26.777
+        },
+        "POST /api/generate": {
+          "count": 300,
+          "mean_ms": 3.13,
+          "p50_ms": 2.799,
+          "p95_ms": 4.29,
+          "p99_ms": 7.79,
+          "max_ms": 38.901
+        }
+      }
+    },
+    "concurrent": {
+      "requests": 1200,
+      "succeeded": 1200,
+      "failed": 0,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 1200
+      },
+      "requests_per_second": 40.43,
+      "all_requests": {
+        "count": 1200,
+        "mean_ms": 194.12,
+        "p50_ms": 156.128,
+        "p95_ms": 408.094,
+        "p99_ms": 473.238,
+        "max_ms": 659.683
+      },
+      "by_endpoint": {
+        "GET /api/cutouts/{id}": {
+          "count": 300,
+          "mean_ms": 272.32,
+          "p50_ms": 276.243,
+          "p95_ms": 373.074,
+          "p99_ms": 429.596,
+          "max_ms": 603.1
+        },
+        "GET /api/results/{id}": {
+          "count": 300,
+          "mean_ms": 350.23,
+          "p50_ms": 354.031,
+          "p95_ms": 466.036,
+          "p99_ms": 653.987,
+          "max_ms": 659.683
+        },
+        "POST /api/garments/prepare": {
+          "count": 300,
+          "mean_ms": 72.53,
+          "p50_ms": 64.791,
+          "p95_ms": 137.434,
+          "p99_ms": 183.843,
+          "max_ms": 204.601
+        },
+        "POST /api/generate": {
+          "count": 300,
+          "mean_ms": 81.41,
+          "p50_ms": 76.404,
+          "p95_ms": 154.574,
+          "p99_ms": 198.462,
+          "max_ms": 219.226
+        }
+      }
+    }
+  }
+}

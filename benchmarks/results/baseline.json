@@ -1,0 +1,547 @@
+{
+  "label": "baseline",
+  "environment": {
+    "timestamp_utc": "2026-10-26T05:31:47+00:00",
+    "client_python": "3.13.14",
+    "host_os": "Windows-11-10.0.26200-SP0",
+    "host_cpu": "Intel64 Family 6 Model 189 Stepping 1, GenuineIntel",
+    "mode": "local",
+    "server_python": "3.13.14",
+    "server_fastapi": "0.162.0",
+    "server_uvicorn": "0.54.0",
+    "host_logical_cpus": 8,
+    "host_memory_bytes": 33971167232,
+    "memory_limit_enforced": false
+  },
+  "workload": {
+    "iteration": "POST /api/garments/prepare -> GET cutout -> POST /api/generate -> GET result",
+    "iterations_sequential": 100,
+    "checkpoints": [
+      10,
+      50,
+      100
+    ],
+    "iterations_concurrent": 100,
+    "concurrency": 8,
+    "result_bytes": 2097152,
+    "cutout_bytes": 1572864,
+    "person_upload_bytes": 229,
+    "garment_upload_bytes": 156,
+    "repeats": 3,
+    "idle_seconds": 3,
+    "log_level": "INFO"
+  },
+  "runs": [
+    {
+      "repeat": 1,
+      "crashed_at": null,
+      "final_state": {
+        "running": true,
+        "exit_code": null
+      },
+      "phases": {
+        "sequential": {
+          "iterations": 100,
+          "wall_seconds": 12.675
+        },
+        "concurrent": {
+          "iterations": 100,
+          "concurrency": 8,
+          "wall_seconds": 9.648
+        }
+      },
+      "snapshots": [
+        {
+          "point": "initial",
+          "completed_iterations": 0,
+          "process": {
+            "rss_bytes": 84963328,
+            "peak_rss_bytes": 84963328
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 0,
+            "bytes": 0
+          }
+        },
+        {
+          "point": "after_10",
+          "completed_iterations": 10,
+          "process": {
+            "rss_bytes": 124669952,
+            "peak_rss_bytes": 124669952
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 20,
+            "bytes": 36700160
+          }
+        },
+        {
+          "point": "after_50",
+          "completed_iterations": 50,
+          "process": {
+            "rss_bytes": 274513920,
+            "peak_rss_bytes": 274513920
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 100,
+            "bytes": 183500800
+          }
+        },
+        {
+          "point": "after_100",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 461479936,
+            "peak_rss_bytes": 461479936
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 200,
+            "bytes": 367001600
+          }
+        },
+        {
+          "point": "idle_after_sequential",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 458870784,
+            "peak_rss_bytes": 461479936
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 200,
+            "bytes": 367001600
+          }
+        },
+        {
+          "point": "after_concurrent",
+          "completed_iterations": 200,
+          "process": {
+            "rss_bytes": 831885312,
+            "peak_rss_bytes": 831885312
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 400,
+            "bytes": 734003200
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "crashed_at": null,
+      "final_state": {
+        "running": true,
+        "exit_code": null
+      },
+      "phases": {
+        "sequential": {
+          "iterations": 100,
+          "wall_seconds": 12.411
+        },
+        "concurrent": {
+          "iterations": 100,
+          "concurrency": 8,
+          "wall_seconds": 9.405
+        }
+      },
+      "snapshots": [
+        {
+          "point": "initial",
+          "completed_iterations": 0,
+          "process": {
+            "rss_bytes": 84189184,
+            "peak_rss_bytes": 84189184
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 0,
+            "bytes": 0
+          }
+        },
+        {
+          "point": "after_10",
+          "completed_iterations": 10,
+          "process": {
+            "rss_bytes": 124686336,
+            "peak_rss_bytes": 124686336
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 20,
+            "bytes": 36700160
+          }
+        },
+        {
+          "point": "after_50",
+          "completed_iterations": 50,
+          "process": {
+            "rss_bytes": 274624512,
+            "peak_rss_bytes": 274624512
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 100,
+            "bytes": 183500800
+          }
+        },
+        {
+          "point": "after_100",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 462114816,
+            "peak_rss_bytes": 462114816
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 200,
+            "bytes": 367001600
+          }
+        },
+        {
+          "point": "idle_after_sequential",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 459055104,
+            "peak_rss_bytes": 462114816
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 200,
+            "bytes": 367001600
+          }
+        },
+        {
+          "point": "after_concurrent",
+          "completed_iterations": 200,
+          "process": {
+            "rss_bytes": 831746048,
+            "peak_rss_bytes": 831746048
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 400,
+            "bytes": 734003200
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 3,
+      "crashed_at": null,
+      "final_state": {
+        "running": true,
+        "exit_code": null
+      },
+      "phases": {
+        "sequential": {
+          "iterations": 100,
+          "wall_seconds": 13.047
+        },
+        "concurrent": {
+          "iterations": 100,
+          "concurrency": 8,
+          "wall_seconds": 9.629
+        }
+      },
+      "snapshots": [
+        {
+          "point": "initial",
+          "completed_iterations": 0,
+          "process": {
+            "rss_bytes": 84078592,
+            "peak_rss_bytes": 84078592
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 0,
+            "bytes": 0
+          }
+        },
+        {
+          "point": "after_10",
+          "completed_iterations": 10,
+          "process": {
+            "rss_bytes": 124473344,
+            "peak_rss_bytes": 124473344
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 20,
+            "bytes": 36700160
+          }
+        },
+        {
+          "point": "after_50",
+          "completed_iterations": 50,
+          "process": {
+            "rss_bytes": 274186240,
+            "peak_rss_bytes": 274186240
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 100,
+            "bytes": 183500800
+          }
+        },
+        {
+          "point": "after_100",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 461664256,
+            "peak_rss_bytes": 461664256
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 200,
+            "bytes": 367001600
+          }
+        },
+        {
+          "point": "idle_after_sequential",
+          "completed_iterations": 100,
+          "process": {
+            "rss_bytes": 459030528,
+            "peak_rss_bytes": 461664256
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 200,
+            "bytes": 367001600
+          }
+        },
+        {
+          "point": "after_concurrent",
+          "completed_iterations": 200,
+          "process": {
+            "rss_bytes": 833093632,
+            "peak_rss_bytes": 833093632
+          },
+          "cgroup": {
+            "current_bytes": null,
+            "peak_bytes": null,
+            "max_bytes": null,
+            "oom_kill_events": null
+          },
+          "store": {
+            "implementation": "unbounded-dict",
+            "items": 400,
+            "bytes": 734003200
+          }
+        }
+      ]
+    }
+  ],
+  "latency": {
+    "sequential": {
+      "requests": 1200,
+      "succeeded": 1200,
+      "failed": 0,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 1200
+      },
+      "requests_per_second": 31.47,
+      "all_requests": {
+        "count": 1200,
+        "mean_ms": 31.73,
+        "p50_ms": 32.151,
+        "p95_ms": 78.743,
+        "p99_ms": 115.241,
+        "max_ms": 123.692
+      },
+      "by_endpoint": {
+        "GET /api/cutouts/{id}": {
+          "count": 300,
+          "mean_ms": 52.6,
+          "p50_ms": 48.87,
+          "p95_ms": 85.341,
+          "p99_ms": 93.628,
+          "max_ms": 96.64
+        },
+        "GET /api/results/{id}": {
+          "count": 300,
+          "mean_ms": 67.93,
+          "p50_ms": 65.828,
+          "p95_ms": 110.932,
+          "p99_ms": 119.321,
+          "max_ms": 123.692
+        },
+        "POST /api/garments/prepare": {
+          "count": 300,
+          "mean_ms": 2.94,
+          "p50_ms": 2.402,
+          "p95_ms": 4.038,
+          "p99_ms": 20.32,
+          "max_ms": 51.196
+        },
+        "POST /api/generate": {
+          "count": 300,
+          "mean_ms": 3.43,
+          "p50_ms": 3.178,
+          "p95_ms": 4.916,
+          "p99_ms": 7.997,
+          "max_ms": 10.049
+        }
+      }
+    },
+    "concurrent": {
+      "requests": 1200,
+      "succeeded": 1200,
+      "failed": 0,
+      "error_rate": 0.0,
+      "status_codes": {
+        "200": 1200
+      },
+      "requests_per_second": 41.84,
+      "all_requests": {
+        "count": 1200,
+        "mean_ms": 187.2,
+        "p50_ms": 128.511,
+        "p95_ms": 409.336,
+        "p99_ms": 479.43,
+        "max_ms": 514.842
+      },
+      "by_endpoint": {
+        "GET /api/cutouts/{id}": {
+          "count": 300,
+          "mean_ms": 260.49,
+          "p50_ms": 265.332,
+          "p95_ms": 385.279,
+          "p99_ms": 428.776,
+          "max_ms": 490.354
+        },
+        "GET /api/results/{id}": {
+          "count": 300,
+          "mean_ms": 337.77,
+          "p50_ms": 347.665,
+          "p95_ms": 475.268,
+          "p99_ms": 507.957,
+          "max_ms": 514.842
+        },
+        "POST /api/garments/prepare": {
+          "count": 300,
+          "mean_ms": 67.19,
+          "p50_ms": 61.755,
+          "p95_ms": 117.185,
+          "p99_ms": 141.476,
+          "max_ms": 182.286
+        },
+        "POST /api/generate": {
+          "count": 300,
+          "mean_ms": 83.35,
+          "p50_ms": 76.458,
+          "p95_ms": 153.031,
+          "p99_ms": 182.115,
+          "max_ms": 212.028
+        }
+      }
+    }
+  }
+}

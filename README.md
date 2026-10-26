@@ -31,7 +31,7 @@ Required: one full-body person image. Optional but at least one required: `top`,
 { "status": "completed", "result_url": "/api/results/<id>", "retry_count": 0 }
 ```
 
-The MVP holds returned image bytes in process memory only; restarting the backend clears results.
+Results and garment cutouts live in a bounded in-process `TemporaryImageStore` (`backend/app/services/temporary_image_store.py`): entries expire after `IMAGE_STORE_TTL_SECONDS` (default 30 minutes), and results and cutouts share one `IMAGE_STORE_MAX_BYTES` budget (default 64 MiB) and an `IMAGE_STORE_MAX_ITEMS` cap, evicting the least recently used entry first. An expired or evicted id returns `404`; an image larger than the whole budget returns `507`. The store is per process, so restarting the backend clears it and it is not shared across workers. See [docs/architecture-before-after.md](docs/architecture-before-after.md) and [docs/technical-decisions.md](docs/technical-decisions.md).
 
 ## Architecture
 
@@ -117,12 +117,13 @@ No API keys are committed or exposed to browser code. The legacy repository cont
 ## Test and build
 
 ```bash
-cd backend && pytest
-cd frontend && npm run build
+(cd backend && pytest)
+(cd frontend && npm run build)
+python benchmarks/run_benchmark.py --mode local --label after --backend-dir backend
 ```
 
 ## Known limits and next steps
 
 - Mock mode does not perform real background removal, generation, moderation, or vision validation. OpenAI image editing is available when selected, while background removal, moderation, and vision validation remain mock adapters in this release.
-- Results are temporary and are not persisted.
+- Results are temporary and are not persisted. Memory before and after bounding the store is measured in [docs/performance-analysis.md](docs/performance-analysis.md); the benchmark is described in [benchmarks/README.md](benchmarks/README.md).
 - Production work should add authenticated, provider-specific adapters; strong image moderation; source-image quality checks; object storage with retention rules; and progress delivery via SSE or polling.
