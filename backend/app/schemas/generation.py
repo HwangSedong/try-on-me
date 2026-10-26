@@ -60,6 +60,8 @@ class GenerationOutput(BaseModel):
     image: ImageAsset
     retry_count: int
     validation: QualityResult
+    # Milliseconds per pipeline stage, summed across attempts.
+    stage_ms: dict[str, int] = Field(default_factory=dict)
 
     model_config = {"arbitrary_types_allowed": True}
 

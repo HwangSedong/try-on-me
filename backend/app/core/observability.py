@@ -5,6 +5,7 @@ bytes, filenames, prompts, or credentials to stdout.
 """
 
 import logging
+import sys
 from contextlib import contextmanager
 from contextvars import ContextVar
 from datetime import datetime, timezone
@@ -15,8 +16,16 @@ logger = logging.getLogger("try_on_me.observability")
 
 
 def configure_observability(level: str) -> None:
-    """Let Uvicorn own the output handler while this logger controls its level."""
+    """Write events to stdout at the configured level.
+
+    Uvicorn only configures its own loggers, so without a handler here INFO events
+    fall through to Python's last-resort handler, which drops everything below WARNING.
+    """
     logger.setLevel(getattr(logging, level.upper(), logging.INFO))
+    if not logger.handlers:
+        handler = logging.StreamHandler(sys.stdout)
+        handler.setFormatter(logging.Formatter("%(message)s"))
+        logger.addHandler(handler)
 
 
 @contextmanager
@@ -30,6 +39,8 @@ def generation_request_context(request_id: str) -> Iterator[None]:
 
 def log_event(event: str, **attributes: Any) -> None:
     """Emit a compact terminal event and retain its fields on the log record."""
+    if not logger.isEnabledFor(logging.INFO):
+        return
     payload: dict[str, Any] = {
         "timestamp": datetime.now(timezone.utc).isoformat(timespec="milliseconds"),
         "event": event,
@@ -71,6 +82,13 @@ def _format_usage(usage: dict[str, Any] | None) -> str | None:
         f"합계 {total_tokens}" if total_tokens is not None else None,
     ]
     return " | ".join(part for part in parts if part)
+
+
+def _format_store(store: dict[str, Any]) -> str:
+    return (
+        f"  임시 저장소  {store['items']}개 · {_format_bytes(store['bytes'])} / {_format_bytes(store['max_bytes'])}"
+        f" | 축출 {store['evicted']} · 만료 {store['expired']}"
+    )
 
 
 def _format_event(payload: dict[str, Any]) -> str:
@@ -135,7 +153,23 @@ def _format_event(payload: dict[str, Any]) -> str:
     if event == "pipeline.failed":
         return f"{prefix} 파이프라인 실패 · {duration} | 총 {payload['attempts']}회 시도"
     if event == "generation.request_completed":
-        return f"{prefix} 요청 완료 · {duration} | 재시도 {payload['retry_count']}회 | 결과 ID {payload['result_id'][:8]}"
+        lines = [f"{prefix} 요청 완료 · {duration} | 재시도 {payload['retry_count']}회 | 결과 ID {payload['result_id'][:8]}"]
+        if stage_ms := payload.get("stage_ms"):
+            lines.append("  단계  " + " · ".join(f"{name} {value}ms" for name, value in stage_ms.items()))
+        if output := payload.get("output"):
+            lines.append(f"  결과  {output['content_type']}{' · ' + output['size'] if output.get('size') else ''} · {_format_bytes(output['bytes'])}")
+        if store := payload.get("store"):
+            lines.append(_format_store(store))
+        return "\n".join(lines)
+    if event == "garment.preparation.request_completed":
+        output = payload["output"]
+        return (
+            f"{prefix} 의류 준비 요청 완료 · {duration}\n"
+            f"  컷아웃  {output['content_type']}{' · ' + output['size'] if output.get('size') else ''} · {_format_bytes(output['bytes'])}\n"
+            + _format_store(payload["store"])
+        )
+    if event == "garment.preparation.request_failed":
+        return f"{prefix} 의류 준비 요청 실패 · {duration} | HTTP {payload['status_code']} | {payload['error_type']}"
     if event == "generation.request_failed":
         return f"{prefix} 요청 실패 · {duration} | HTTP {payload['status_code']} | {payload['error_type']}"
     return f"{prefix} {event}"

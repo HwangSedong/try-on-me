@@ -21,6 +21,7 @@ from app.services.garment_preparer import MockGarmentPreparer, OpenAIGarmentPrep
 from app.services.outfit_generator import OutfitGenerator
 from app.services.quality_validator import QualityValidator
 from app.services.safety_validator import SafetyValidator
+from app.services.temporary_image_store import TemporaryImageStore
 
 
 def _mock_only(provider_name: str, configured: str, implementation: object) -> object:
@@ -81,6 +82,7 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Try-On-Me v2 API", version="2.0.0")
     app.state.settings = settings
     app.state.garment_preparer = create_garment_preparer(settings)
+    app.state.image_store = TemporaryImageStore(settings.image_store_ttl_seconds, settings.image_store_max_items, settings.image_store_max_bytes)
     app.add_middleware(CORSMiddleware, allow_origins=settings.allowed_origins, allow_credentials=False, allow_methods=["*"], allow_headers=["*"])
     # Each configured provider is resolved at this boundary, keeping provider SDKs out of routes and pipeline logic.
     app.state.pipeline = OutfitPipeline(

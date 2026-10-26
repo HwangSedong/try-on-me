@@ -139,3 +139,11 @@ async def test_wraps_openai_provider_errors_without_exposing_details():
 
     with pytest.raises(ImageGenerationProviderError):
         await provider(images).generate(asset(b"person"), [GarmentInput(GarmentCategory.TOP, asset(b"top"))], "edit")
+
+
+@pytest.mark.asyncio
+async def test_missing_image_data_is_a_provider_error():
+    images = CapturingImages(encoded_result=None)
+
+    with pytest.raises(ImageGenerationProviderError):
+        await provider(images).generate(asset(b"person"), [GarmentInput(GarmentCategory.TOP, asset(b"top"))], "edit")

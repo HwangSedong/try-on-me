@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     background_removal_provider: str = "mock"
     moderation_provider: str = "mock"
     max_generation_retries: int = 3
+    # Results and garment cutouts share this in-memory budget (see deploy/try-on-me.service MemoryMax=384M).
+    image_store_ttl_seconds: float = 1800
+    image_store_max_items: int = 100
+    image_store_max_bytes: int = 64 * 1024 * 1024
     cors_origins: str = "http://localhost:5173"
     log_level: str = "INFO"
 
