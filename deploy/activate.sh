@@ -60,13 +60,14 @@ apply_nginx() {
 cert="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
 apply_nginx "$RELEASE/deploy/nginx-http.conf"
 
-if [[ ! -f "$cert" ]] && getent hosts "$DOMAIN" | awk '{print $1}' | grep -qx "$PUBLIC_IP"; then
+# /etc/letsencrypt/live is root-only, so a plain -f test as the deploy user never sees the certificate.
+if ! sudo test -f "$cert" && getent hosts "$DOMAIN" | awk '{print $1}' | grep -qx "$PUBLIC_IP"; then
   if command -v certbot >/dev/null; then
     sudo certbot certonly --webroot -w /var/www/certbot -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email || true
   fi
 fi
 
-if [[ -f "$cert" ]]; then
+if sudo test -f "$cert"; then
   apply_nginx "$RELEASE/deploy/nginx-https.conf"
 fi
 
